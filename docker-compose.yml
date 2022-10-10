@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+  bot:
+    build: .
+    env_file:
+      - ".env"
+    volumes:
+      - web_service_volume:/web_service_volume
+    ports:
+      - "${EXTERNAL_SERVER_PORT}:${INTERNAL_SERVER_PORT}"
+    restart: unless-stopped
+
+
+volumes:
+  web_service_volume:

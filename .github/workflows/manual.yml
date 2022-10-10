@@ -1,0 +1,39 @@
+name: building Web Api
+on:
+  push:
+    branches: master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          command_timeout: 10m
+          script: |
+            cd /home/web_server
+            
+            git pull
+            
+            touch .env
+            
+            printf "EXTERNAL_SERVER_PORT=8085\n" >> ".env"
+            printf "EXTERNAL_SERVER_ADDRESS=0.0.0.0n" >> ".env"
+            
+            printf "INTERNAL_SERVER_PORT=8084\n" >> ".env"
+            printf "INTERNAL_SERVER_ADDRESS=0.0.0.0\n" >> ".env"
+            
+            printf "LOCAL_FILES_ROOT=static/\n" >> ".env"
+            printf "DOCKER_FILES_ROOT=web_service_volume/\n" >> ".env"
+            
+            printf "JWT_SECRET=${{ secrets.DEV_JWT_SECRET}}\n" >> ".env"
+            printf "JWT_ALGORITHM=HS256\n" >> ".env"
+            printf "JWT_EXPIRATION=999999\n" >> ".env"
+            
+            docker-compose -p web_server down
+            docker system prune -a -f
+            docker-compose build web_server_api 
+            docker-compose -p web_server up -d
