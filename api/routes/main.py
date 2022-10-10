@@ -14,7 +14,7 @@ main_router = APIRouter()
 @main_router.get(
     path='/',
     responses={
-        200: {'schema': MainSchema}
+        200: {'model': MainSchema}
     },
     tags=['hello_world'],
     description='Return phrase "Hello World".'
@@ -38,8 +38,8 @@ async def redirect_to_main() -> RedirectResponse:
 @main_router.get(
     path='/eval',
     responses={
-        200: {'schema': PhraseExpression},
-        400: {'schema': PhraseExpressionError}
+        200: {'model': PhraseExpression},
+        400: {'model': PhraseExpressionError}
     },
     tags=['eval_get'],
     description=(
@@ -62,8 +62,8 @@ async def eval_get(
     path='/eval',
     status_code=201,
     responses={
-        201: {'schema': PhraseExpression},
-        400: {'schema': PhraseExpressionError}
+        201: {'model': PhraseExpression},
+        400: {'model': PhraseExpressionError}
     },
     tags=['eval_post'],
     description=(
